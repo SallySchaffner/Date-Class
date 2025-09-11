@@ -128,3 +128,19 @@ if __name__ == "__main__":
     print("Changing the year to 2009")
     d1.year = 2009
     print(d1)
+    print("--------------")
+    
+    d1.nextDay()
+    print(f"next day: {d1}")
+
+    d1.previousDay()
+    print(f"previous day:, {d1}")
+
+    print("Is leap year?", d1.isLeapYear(d1.year))
+
+    d1 = Date(12, 31, 2024)
+    d1.nextDay()
+    print("Year rollover:", d1)
+    
+    d2 = Date.from_input()
+    print(d2)
