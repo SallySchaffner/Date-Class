@@ -1,50 +1,58 @@
 from datetime import date as dt_date, timedelta
 
 class Date:
-    MONTH_NAMES = [
-        "", "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ]
-
-    def __init__(self, month=1, day=1, year=1900):
-        if self._is_valid_date(month, day, year):
-            self._date = dt_date(year, month, day)
-        else:
-            print("Invalid input. Defaulting to 1/1/1900.")
-            self._date = dt_date(1900, 1, 1)
-
-    def set_date(self, month, day, year):
-        if self._is_valid_date(month, day, year):
-            self._date = dt_date(year, month, day)
-        else:
-            print("Invalid input. Defaulting to 1/1/1900.")
-            self._date = dt_date(1900, 1, 1)
-
-    def get_day(self):
-        return self._date.day
-
-    def get_month(self):
-        return self._date.month
-
-    def get_year(self):
-        return self._date.year
-
-    def is_leap_year(self):
-        return Date.is_leap_year_static(self.get_year())
-
     @staticmethod
-    def is_leap_year_static(year):
+    def isLeapYear(year):
         return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
-
-    def last_day(self):
-        return Date.last_day_static(self.get_month(), self.get_year())
 
     @staticmethod
     def last_day_static(month, year):
         if month in [1,3,5,7,8,10,12]: return 31
         if month in [4,6,9,11]: return 30
-        return 29 if Date.is_leap_year_static(year) else 28
+        return 29 if Date.isLeapYear(year) else 28
+    
+    def __init__(self, month=1, day=1, year=1900):
+        self._date = self.setDate(month, day, year)
 
+    def setDate(self, month, day, year):
+        try:
+            date = dt_date(year, month, day)
+            return date
+        except ValueError:
+            print("Invalid date, setting to default")
+            date = dt_date(1900, 1, 1)
+            return date
+
+    @property
+    def day(self):
+        return self._date.day
+
+    @day.setter
+    def day(self, d):
+        m = self._date.month
+        y = self._date.year
+        self._date = self.setDate(m, d, y)
+
+    @property
+    def month(self):
+        return self._date.month
+
+    @month.setter
+    def month(self, m):
+        d = self._date.day
+        y = self._date.year
+        self._date = self.setDate(m, d, y)
+
+    @property
+    def year(self):
+        return self._date.year
+
+    @year.setter
+    def year(self, y):
+        d = self._date.day
+        m = self._date.month
+        self._date = self.setDate(m, d, y)
+   
     def print_format_1(self):
         return self._date.strftime("%m/%d/%Y")
 
@@ -52,22 +60,21 @@ class Date:
         return self._date.strftime("%B %d, %Y")
 
     def print_format_3(self):
-        return f"{self._date.day} {Date.MONTH_NAMES[self._date.month]} {self._date.year}"
+        return self._date.strftime("%d %B %Y")
 
     def __str__(self):
-        return self.print_format_2()
+        return self.print_format_1()
 
     def __sub__(self, other):
         return abs((self._date - other._date).days)
 
     def __add__(self, days):
-        new_date = self._date + timedelta(days=days)
-        return Date(new_date.month, new_date.day, new_date.year)
+        self._date += timedelta(days=days)
 
-    def increment(self):
+    def nextDay(self):
         self._date += timedelta(days=1)
 
-    def decrement(self):
+    def previousDay(self):
         self._date -= timedelta(days=1)
 
     @classmethod
@@ -80,33 +87,44 @@ class Date:
             print("Invalid input. Defaulting to 1/1/1900.")
             return cls()
 
-    def _is_valid_date(self, m, d, y):
-        try:
-            dt_date(y, m, d)
-            return True
-        except ValueError:
-            return False
-
 if __name__ == "__main__":
+    print("Default constructor")
     d1 = Date()
-    d2 = Date(2, 29, 2008)
-    print("Default:", d1)
-    print("Leap date:", d2.print_format_3())
+    print(d1)
+    print("--------------")
 
-    d2.increment()
-    print("After increment:", d2.print_format_1())
+    print("Invalid date, 2/29/2009")
+    d1 = Date(2, 29, 2009)
+    print(d1)
+    print("--------------")
+    print("Invalid date: 4/31/2008")
+    d1 = Date(4, 31, 2008)
+    print(d1)
+    print("--------------")
+    print("Invalid date: 13/1/1953")
+    d1 = Date(13, 1, 1953)
+    print(d1)
+    print("--------------")
 
-    d2.decrement()
-    print("After decrement:", d2.print_format_1())
+    print("Valid date")
+    d1 = Date(2, 29, 2008)
+    print(d1)
+    print(d1.print_format_2())
+    print(d1.print_format_3())
+    print("--------------")
 
-    print("Is leap year?", d2.is_leap_year())
+    print("Accessing date components as ints")
+    print(d1.month, d1.day, d1.year)
+    print("--------------")
+    
+    print("Changing the day to 15")
+    d1.day = 15
+    print(d1)
 
-    d3 = Date(12, 31, 2024)
-    d3.increment()
-    print("Year rollover:", d3)
+    print("Changing the month to May")
+    d1.month = 5
+    print(d1)
 
-    diff = d2 - d3
-    print(f"Days between {d2} and {d3}: {diff}")
-
-    d3 = Date.from_input()
-    print(d3)
+    print("Changing the year to 2009")
+    d1.year = 2009
+    print(d1)

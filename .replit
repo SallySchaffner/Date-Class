@@ -2,7 +2,7 @@ entrypoint = "main.py"
 modules = ["python-3.11"]
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-25_05"
 
 [unitTest]
 language = "python3"
@@ -13,3 +13,6 @@ requiredFiles = [".replit", "replit.nix"]
 [deployment]
 run = ["python3", "main.py"]
 deploymentTarget = "cloudrun"
+
+[agent]
+expertMode = true
