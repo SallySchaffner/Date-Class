@@ -7,8 +7,10 @@ class Date:
 
     @staticmethod
     def last_day_static(month, year):
-        if month in [1,3,5,7,8,10,12]: return 31
-        if month in [4,6,9,11]: return 30
+        if month in [1,3,5,7,8,10,12]: 
+            return 31
+        if month in [4,6,9,11]: 
+            return 30
         return 29 if Date.isLeapYear(year) else 28
     
     def __init__(self, month=1, day=1, year=1900):
@@ -72,7 +74,7 @@ class Date:
         self._date += timedelta(days=days)
 
     def nextDay(self):
-        self._date += timedelta(days=1)
+        self._date = self._date + timedelta(days=1)
 
     def previousDay(self):
         self._date -= timedelta(days=1)
